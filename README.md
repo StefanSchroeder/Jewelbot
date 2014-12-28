@@ -1,3 +1,7 @@
+
+![Logo](https://github.com/StefanSchroeder/Jewelbot/blob/master/video.gif?raw=true)
+
+
 Jewelbot
 ========
 
