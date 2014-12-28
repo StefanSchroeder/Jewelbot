@@ -49,7 +49,7 @@ Repeat.
 Interesting details
 ===================
 
-Every other symbol has a different background color. To avoid havinf to deal with that, a frame of width $frame is removed from each tile.
+Every other symbol has a different background color. To avoid having to deal with that, a border of width $frame is removed from each tile.
 
 After clicking, you have to wait a bit until the click was executed.
 
