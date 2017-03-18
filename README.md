@@ -19,6 +19,18 @@ It consists of four parts:
 
 The script is designed to run with the medium size board (tilesize 48x48). Using it for the other sizes requires soem tweaking of the threshold to distingush the symbols.
 
+
+Installation
+============
+
+Requires perl-package Imager::Screenshot. It's not packaged in debian, but cpanm is your friend.
+
+    apt install cpanm libx11-guitest-perl gweled
+    cpanm Imager::Screenshot
+
+Your offset might need tweaking, depending on the details of your
+window-manager.
+
 Design
 ======
 

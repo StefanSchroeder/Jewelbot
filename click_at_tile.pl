@@ -36,7 +36,7 @@ if (@ARGV)
 		chomp $coords;
 		warn "NO SOLUTION", exit if($coords =~ m/NO/);
 		my ($x, $y) = split(",", $coords);
-		click_at($x, $y);
+		click_at($x, $y+1);
 		WaitSeconds($sleep);
 	}
 }
