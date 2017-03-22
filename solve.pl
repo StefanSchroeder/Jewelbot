@@ -48,9 +48,9 @@ warn "# Solution_cnt = $solution_cnt\n";
 # We already found one. premature bailout.
 # Pick one of the solutions randomly. This
 # is important in case of a bad solution.
-my $pick = int(rand($solution_cnt));
 if ($solution_cnt)
 {
+    my $pick = int(rand($solution_cnt));
 	print "$solutions[$pick*2] $solutions[$pick*2+1]\n";
 	exit;
 }
@@ -65,36 +65,40 @@ foreach( examine_puzzle(\@a_t) )
 
 if ($solution_cnt)
 {
+    my $pick = int(rand($solution_cnt));
 	print "$solutions[$pick*2] $solutions[$pick*2+1]\n";
+    exit;
 }
-else
-{
-	print "NO SOLUTION" unless($solution_cnt);
-}
+
+print "NO SOLUTION";
+
+exit;
 
 ##################################################
+# examine_puzzle check each of the 8 different solutions if any of them
+# is a hit.
 sub examine_puzzle
 {
-	my $a_ref = shift;
+    my $a_ref = shift;
 
-	my @collect = ();
-	foreach my $j ( 0.. $size-1 )
-	{
-		foreach my $i ( 0.. $size-1 )
-		{
-			push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i,$j+3, $i,$j+2); # 1
-				push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i+1,$j+2, $i,$j+2); # 2
-				push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i-1,$j+2, $i,$j+2); # 3
-				push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i-1,$j-1, $i,$j-1); # 4
-				push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i+1,$j-1, $i,$j-1); # 6
-				push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i,$j-2, $i,$j-1); # 5
-				push @collect, tryn($a_ref, $i,$j, $i,$j+2, $i+1,$j+1, $i,$j+1); # 7
-				push @collect, tryn($a_ref, $i,$j, $i,$j+2, $i-1,$j+1, $i,$j+1); # 8
-		}
-	}
-	return(@collect);
-
+    my @collect = ();
+    foreach my $j ( 0 .. $size-1 )
+    {
+        foreach my $i ( 0 .. $size-1 )
+        {
+            push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i  ,$j+3, $i,$j+2); # 1
+            push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i+1,$j+2, $i,$j+2); # 2
+            push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i-1,$j+2, $i,$j+2); # 3
+            push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i-1,$j-1, $i,$j-1); # 4
+            push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i+1,$j-1, $i,$j-1); # 6
+            push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i,  $j-2, $i,$j-1); # 5
+            push @collect, tryn($a_ref, $i,$j, $i,$j+2, $i+1,$j+1, $i,$j+1); # 7
+            push @collect, tryn($a_ref, $i,$j, $i,$j+2, $i-1,$j+1, $i,$j+1); # 8
+        }
+    }
+    return(@collect);
 }
+
 ##################################################
 sub transpose
 {
@@ -131,7 +135,7 @@ sub tryn
 }
 
 ##################################################
-
+# for debugging only
 sub dump_puzzle
 {
 	my @puzzle = @_;
@@ -146,3 +150,4 @@ sub dump_puzzle
 }
 
 ##################################################
+
