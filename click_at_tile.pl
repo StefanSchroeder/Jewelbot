@@ -13,48 +13,35 @@ use Imager::Screenshot 'screenshot';
 use Getopt::Long;
 
 my $debug = 1;
-my $sleep = 0.3;
-my $jewels = 8;
+my $sleep = 0.5;
+my $columns = 8;
+my $fixy = 0;
 
 GetOptions(
-    'jewels=i' => \$jewels,
+    'columns=i' => \$columns,
+    'fixy=i' => \$fixy,
 );
 
 my ($windowsid) = FindWindowLike('Gweled');
+die("FATAL: Cannot find gweled window.\n") unless( $windowsid );
 my $img = screenshot(id => $windowsid);
-my $wid =$img->getwidth();
-my $tilewidth = $wid / $jewels;
+my $tilewidth = $img->getwidth() / $columns;
 
-my @pos = GetWindowPos($windowsid);
-my ($offset_x,  $offset_y) = @pos;
+my ($offset_x,  $offset_y) = GetWindowPos($windowsid);
+warn "tilewidth=$tilewidth\n" if ($debug);
 
-if (@ARGV)
+foreach (@ARGV)
 {
-	foreach (@ARGV)
-	{
-		my $coords = $_;
-		chomp $coords;
-		warn "NO SOLUTION", exit if($coords =~ m/NO/);
-		my ($x, $y) = split(",", $coords);
-		click_at($x, $y+1);
-		WaitSeconds($sleep);
-	}
+    my $coords = $_;
+    chomp $coords;
+    warn "NO SOLUTION", exit if($coords =~ m/NO/);
+    my ($x, $y) = split(",", $coords);
+	print "Clicking at tile $x, $y\n" if($debug);
+    ClickWindow($windowsid, $x*$tilewidth + $tilewidth / 2, $fixy + $y*$tilewidth + $tilewidth / 2 );
+    WaitSeconds($sleep);
 }
 
-MoveMouseAbs(100, 100); # Click into terminal.
-ClickMouseButton(M_LEFT);
-
-exit;
-
-sub click_at
-{
-	my ($x, $y) = @_;
-	print "Clicking at tile $x, $y\n";
-
-	my $real_x = $offset_x + ($x*$tilewidth + $tilewidth / 2);
-	my $real_y = $offset_y + ($y*$tilewidth + $tilewidth / 2);
-	print "Clicking at coord $real_x, $real_y\n";
-	MoveMouseAbs($real_x, $real_y);
-	ClickMouseButton(M_LEFT);
-}
+# Click into terminal to permit pressinc Ctrl-C
+MoveMouseAbs($offset_x-10, $offset_y);
+#ClickMouseButton(M_LEFT);
 
