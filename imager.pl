@@ -4,6 +4,7 @@ use strict;
 use Imager;
 use Imager::Screenshot 'screenshot';
 use X11::GUITest qw/ FindWindowLike MoveMouseAbs /;
+use Statistics::Basic qw /median/;
 
 exit if (not Imager::Screenshot->have_x11);
 
@@ -83,6 +84,14 @@ sub computeDiff
 
 	my $w = $img1->getwidth() - 1;
 	my $sum = 0;
+
+    my  @greens2;
+    my  @reds2;
+    my  @blues2;
+    my  @greens1;
+    my  @reds1;
+    my  @blues1;
+
 	for my $y (0 .. $w)
 	{
 		for my $x (0 .. $w)
@@ -92,8 +101,27 @@ sub computeDiff
 			my ($r1, $g1, $b1) = $c1->rgba();
 			my ($r2, $g2, $b2) = $c2->rgba();
 			$sum += ($r2-$r1)*($r2-$r1) + ($g2-$g1)*($g2-$g1) + ($b2-$b1)*($b2-$b1);
+            push @greens2, $g2;
+            push @reds2, $r2;
+            push @blues2, $b2;
+            push @greens1, $g1;
+            push @reds1, $r1;
+            push @blues1, $b1;
 		}
 	}
+    
+    my $mg1 = median( @greens1);
+    my $mr1 = median( @reds1);
+    my $mb1 = median( @blues1);
+    my $mr2 = median( @reds2 );
+    my $mg2 = median( @greens2 );
+    my $mb2 = median( @blues2);
+    warn "Median: ", median(@greens2), " ", median(@reds2), " ", median(@blues2);
+    warn "Median: ", median(@greens1), " ", median(@reds1), " ", median(@blues1);
+    my $msum = ($mg1-$mg2)* ($mg1-$mg2) + ($mr1-$mr2)* ($mr1-$mr2) + ($mb1-$mb2)* ($mb1-$mb2);
+    warn "Median: msum=$msum";
+	return 0 if ($msum > 1000);
+	return 1;
 	#print "Sum = $sum\n";
 	return 0 if ($sum > $THRESHOLD);
 	return 1;
