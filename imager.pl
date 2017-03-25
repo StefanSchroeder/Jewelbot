@@ -6,50 +6,61 @@ use Imager::Screenshot 'screenshot';
 use X11::GUITest qw/ FindWindowLike MoveMouseAbs /;
 use Statistics::Basic qw /median/;
 
+my $debug = 1;
+my $fixy = 24;
+
+# The necessary difference btw. two images to count as different.
+my $THRESHOLD = 1600;
+
 exit if (not Imager::Screenshot->have_x11);
 
-#my $THRESHOLD = 1_570_000;
-my $THRESHOLD = 1_330_000;
-my $black = Imager::Color->new(255, 255, 255);
+my ($boardsize) = @ARGV;
 
-my ($jewels) = @ARGV;
+$boardsize = 8 unless($boardsize);
+warn "# Boardsize = $boardsize\n";
 
-unless($jewels)
-{
-	$jewels = 8;
-}
-warn "Jewels = $jewels\n";
+my ($window_id) = FindWindowLike('Gweled');
+die("Cannot find gweled window.\n") unless($window_id);
 
-my ($windowsid) = FindWindowLike('Gweled');
-my $img = screenshot(id => $windowsid);
-# $img->write(file => 'screen.png', type => 'png' ) || print "Failed: ", $img->{ERRSTR}, "\n";
-
-my $cnt = $jewels - 1;
-
-MoveMouseAbs(100,100); # Move cursor away.
+my $img = screenshot(id => $window_id);
 
 my $wid =$img->getwidth();
-my $board = $img->crop(left=>0 , top=>20 , width=>$wid, height=>$wid); 
-$board->write(file => 'board.png', type => 'png' ) || print "Failed: ", $board->{ERRSTR}, "\n";
+my $board = $img->crop(left=>0 , top=> $fixy , width=>$wid, height=>$wid); 
+if($debug)
+{
+    $board->write(file => 'board.png', type => 'png' ) || print "Failed: ", $board->{ERRSTR}, "\n";
+}
 my $boardwidth = $board->getwidth(); 
 my $boardheight = $board->getheight(); 
-my $tilewidth = $boardwidth / $jewels;
-warn "# Tilesize = $tilewidth\n";
-my $frame = 15; # Shave this border from each tile
-# 48px - 15 -> 23
-# 64px - 41 -> 23
+my $tilewidth = $boardwidth / $boardsize;
 
+warn "# Tilewidth = $tilewidth\n";
+
+# Shave this border from each tile 
+# When tilesize is 48px: 15
+# When tilesize is 64px: 41
+my $frame = 15; 
+
+# A multiline string to hold the result.
 my $puzzle = "";
+
 my $w = $tilewidth;
+
+# The dictionary of all known tiletypes. They're identified by index.
 my @dict;
-for my $j (0 .. $cnt) 
+
+for my $j (0 .. $boardsize - 1) 
 {
-	for my $i (0 .. $cnt) 
+	for my $i (0 .. $boardsize - 1) 
 	{
 		my $x0 = $i*$w;
 		my $y0 = $j*$w;
+
 		my $tile = $board->crop(left=>$x0+$frame , top=>$y0+$frame , width=>$w-2*$frame, height=>$w-2*$frame); 
-		$tile->write(file => "a$i$j.png", type => 'png' ) || print "Failed: ", $tile->{ERRSTR}, "\n";
+        if($debug)
+        {
+		    $tile->write(file => "a$i$j.png", type => 'png' ) || print "Failed: ", $tile->{ERRSTR}, "\n";
+        }
 		
 		my $found = 0;
 		for (my $d=0; $d <= $#dict; $d ++)
@@ -58,14 +69,14 @@ for my $j (0 .. $cnt)
 			if ($matches == 1)
 			{
 				$found = 1;
-				warn "$tile ($i,$j) matches $d\n"; 
+				warn "$tile ($i,$j) matches $d\n" if ($debug);
 				$puzzle .= sprintf("%x",$d) . " ";
 				last;
 			}
 		}
 		if ($found == 0)
 		{
-			warn  "Adding ($i, $j) to dictionary\n";
+			warn  "Image ($i, $j) was not found in the dictionary. Adding to dictionary\n";
 			my $current = scalar @dict;
 			$puzzle .= sprintf("%x",$current) . " ";
 			push @dict, $tile;
@@ -75,6 +86,8 @@ for my $j (0 .. $cnt)
 }
 
 print $puzzle;
+
+exit;
 
 ##################################################
 sub computeDiff
@@ -116,14 +129,9 @@ sub computeDiff
     my $mr2 = median( @reds2 );
     my $mg2 = median( @greens2 );
     my $mb2 = median( @blues2);
-    warn "Median: ", median(@greens2), " ", median(@reds2), " ", median(@blues2);
-    warn "Median: ", median(@greens1), " ", median(@reds1), " ", median(@blues1);
     my $msum = ($mg1-$mg2)* ($mg1-$mg2) + ($mr1-$mr2)* ($mr1-$mr2) + ($mb1-$mb2)* ($mb1-$mb2);
-    warn "Median: msum=$msum";
-	return 0 if ($msum > 1000);
-	return 1;
-	#print "Sum = $sum\n";
-	return 0 if ($sum > $THRESHOLD);
+    warn "diff is $msum";
+	return 0 if ($msum > $THRESHOLD);
 	return 1;
 }
 ##################################################

@@ -29,7 +29,9 @@ Requires perl-package Imager::Screenshot. It's not packaged in debian, but cpanm
     cpanm Imager::Screenshot
 
 Your offset might need tweaking, depending on the details of your
-window-manager.
+window-manager. To do that, change the $debug variable in imager.pl to 1. Then
+run the imager.pl once and checkout the file 'board.png'. Adjust the cropping offsets, until
+the cropped square matches the board.
 
 Design
 ======

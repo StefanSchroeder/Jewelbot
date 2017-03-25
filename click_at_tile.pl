@@ -13,7 +13,7 @@ use Imager::Screenshot 'screenshot';
 use Getopt::Long;
 
 my $debug = 1;
-my $sleep = 0.5;
+my $sleep = 0.3;
 my $columns = 8;
 my $fixy = 0;
 
