@@ -32,13 +32,13 @@ warn "tilewidth=$tilewidth\n" if ($debug);
 
 foreach (@ARGV)
 {
-    my $coords = $_;
-    chomp $coords;
-    warn "NO SOLUTION", exit if($coords =~ m/NO/);
-    my ($x, $y) = split(",", $coords);
+	my $coords = $_;
+	chomp $coords;
+	warn "NO SOLUTION", exit if($coords =~ m/NO/);
+	my ($x, $y) = split(",", $coords);
 	print "Clicking at tile $x, $y\n" if($debug);
-    ClickWindow($windowsid, $x*$tilewidth + $tilewidth / 2, $fixy + $y*$tilewidth + $tilewidth / 2 );
-    WaitSeconds($sleep);
+	ClickWindow($windowsid, $x*$tilewidth + $tilewidth / 2, $fixy + $y*$tilewidth + $tilewidth / 2 );
+	WaitSeconds($sleep);
 }
 
 # Click into terminal to permit pressinc Ctrl-C

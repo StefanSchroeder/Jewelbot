@@ -58,8 +58,8 @@ exit;
 ##################################################
 sub print_solution
 {
-    my $index = shift;
-    my $pick = int(rand($index));
+	my $index = shift;
+	my $pick = int(rand($index));
 	print "$solutions[$pick*2] $solutions[$pick*2+1]\n";
 }
 
@@ -68,24 +68,24 @@ sub print_solution
 # is a hit.
 sub examine_puzzle
 {
-    my $a_ref = shift;
+	my $a_ref = shift;
 
-    my @collect = ();
-    foreach my $j ( 0 .. $size-1 )
-    {
-        foreach my $i ( 0 .. $size-1 )
-        {
-            push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i  ,$j+3, $i,$j+2); # 1
-            push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i+1,$j+2, $i,$j+2); # 2
-            push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i-1,$j+2, $i,$j+2); # 3
-            push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i-1,$j-1, $i,$j-1); # 4
-            push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i+1,$j-1, $i,$j-1); # 6
-            push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i,  $j-2, $i,$j-1); # 5
-            push @collect, tryn($a_ref, $i,$j, $i,$j+2, $i+1,$j+1, $i,$j+1); # 7
-            push @collect, tryn($a_ref, $i,$j, $i,$j+2, $i-1,$j+1, $i,$j+1); # 8
-        }
-    }
-    return(@collect);
+	my @collect = ();
+	foreach my $j ( 0 .. $size-1 )
+	{
+		foreach my $i ( 0 .. $size-1 )
+		{
+			push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i  ,$j+3, $i,$j+2); # 1
+			push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i+1,$j+2, $i,$j+2); # 2
+			push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i-1,$j+2, $i,$j+2); # 3
+			push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i-1,$j-1, $i,$j-1); # 4
+			push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i+1,$j-1, $i,$j-1); # 6
+			push @collect, tryn($a_ref, $i,$j, $i,$j+1, $i,  $j-2, $i,$j-1); # 5
+			push @collect, tryn($a_ref, $i,$j, $i,$j+2, $i+1,$j+1, $i,$j+1); # 7
+			push @collect, tryn($a_ref, $i,$j, $i,$j+2, $i-1,$j+1, $i,$j+1); # 8
+		}
+	}
+	return(@collect);
 }
 
 ##################################################

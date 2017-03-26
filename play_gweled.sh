@@ -7,7 +7,7 @@ current_gweled_instance=$(pidof gweled)
 
 while [ 1 ] 
 do 
-	perl imager.pl $JEWELS > problem.txt 2> w.err
+	perl fetch_board.pl $JEWELS > problem.txt 2> w.err
 	perl click_at_tile.pl --fixy=24 `perl solve.pl problem.txt`
     sleep 1
 done

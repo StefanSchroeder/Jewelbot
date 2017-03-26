@@ -1,3 +1,0 @@
-
-all:
-	bash do.sh
