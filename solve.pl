@@ -40,19 +40,6 @@ foreach( examine_puzzle(\@a) )
 {
 	my($b, $a) = split(",", $_);
 	push @solutions, "$b,$a";
-	$r[$a][$b] = lc $r[$a][$b];
-}
-
-warn "# Solution_cnt = $solution_cnt\n";
-
-# We already found one. premature bailout.
-# Pick one of the solutions randomly. This
-# is important in case of a bad solution.
-if ($solution_cnt)
-{
-    my $pick = int(rand($solution_cnt));
-	print "$solutions[$pick*2] $solutions[$pick*2+1]\n";
-	exit;
 }
 
 my @a_t = transpose(@a);
@@ -60,19 +47,21 @@ foreach( examine_puzzle(\@a_t) )
 {
 	my($a, $b) = split(",", $_);
 	push @solutions, "$b,$a";
-	$r[$a][$b] = lc $r[$a][$b];
 }
 
-if ($solution_cnt)
-{
-    my $pick = int(rand($solution_cnt));
-	print "$solutions[$pick*2] $solutions[$pick*2+1]\n";
-    exit;
-}
+$solution_cnt and print_solution($solution_cnt) and exit;
 
 print "NO SOLUTION";
 
 exit;
+
+##################################################
+sub print_solution
+{
+    my $index = shift;
+    my $pick = int(rand($index));
+	print "$solutions[$pick*2] $solutions[$pick*2+1]\n";
+}
 
 ##################################################
 # examine_puzzle check each of the 8 different solutions if any of them
